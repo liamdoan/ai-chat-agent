@@ -116,25 +116,57 @@ export const generateContent = async (
 // Let AI model remember chat history and response correspondingly
 let chat: any;
 
-export const initializeChat = () => {
+export const initializeChat = (history: any[] = []) => {
     chat = ai.chats.create({
         model: "gemini-2.0-flash",
-        history: []
-    })
+        history: history.map(msg => ({
+            role: msg.role,
+            parts: [{ text: msg.parts[0].text }]
+        }))
+    });
 };
 
-export const sendMessageToChat = async (message: string) => {
+export const sendMessageToChat = async (
+    message: string,
+    handleStreamingUpdate: (newChunk: string) => void
+) => {
     if (!chat) {
         console.log("No chat is initialized");
-        return
+        return;
     }
 
-    try {
-        const response = await chat.sendMessage({message});
-        return response.text;
-    } catch (error) {
-        console.error("Error sending message to chat:", error)    }
-}
+    let retries = 0;
+    while (retries < MAX_RETRIES) {
+        try {
+            let fullResponse = "";
+            const response = await chat.sendMessageStream({message: message});
+
+            for await (const chunk of response) {
+                if (chunk.text) {
+                    handleStreamingUpdate(chunk.text);
+                    fullResponse += chunk.text;
+                }
+            }
+
+            return fullResponse;
+        } catch (error: any) {
+            retries++;
+            
+            if (isRetryableError(error)) {
+                if (retries < MAX_RETRIES) {
+                    console.log(`Retry attempt ${retries} failed, retrying in ${RETRY_DELAY/1000} seconds...`);
+                    await sleep(RETRY_DELAY);
+                    continue;
+                }
+            }
+            
+            console.error("Error sending message to chat:", error);
+            throw new Error(`Failed to send message after ${retries} attempts: ${error.message}`);
+        }
+    }
+    
+    throw new Error("Max retries exceeded");
+};
 
 // error handling flow:
 // - If error happens, check if it's retryable
