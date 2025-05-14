@@ -1,0 +1,60 @@
+.dashboardPage {
+    /* background-color: red; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .texts {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+        .options {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        } 
+    }
+
+    .formContainer {
+        padding: 1rem;
+        margin-top: auto;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    form {
+        width: 50%;
+        padding: 10px 0;
+        background-color: greenyellow;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+
+        input {
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+        }
+
+        button {
+            margin-right: 10px;
+            padding: 10px;
+            background-color: gray;
+            border: 1px solid gray;
+            border-radius: 50%;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
