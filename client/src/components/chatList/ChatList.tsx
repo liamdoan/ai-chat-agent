@@ -1,5 +1,5 @@
 import "./ChatList.css"
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useFetchChatListContext } from "../../utils/context/fetchChatListContext"
 
 const ChatList = () => {
@@ -7,30 +7,42 @@ const ChatList = () => {
 
     return (
         <div className='chatList'>
+            <div className="functionalLinks">
+                <Link className="mainLink createNewChat" to="/dashboard">
+                    <img src="/create-new-chat.svg" alt="create new chat" />
+                </Link>
+            </div>
             <>
-                <Link to="/dashboard">Create a new chat</Link>
-                <Link to="/explore">Explore our AI chat</Link>
-                <Link to="/contact">Contact</Link>
+                <Link className="mainLink explore" to="/explore">
+                    <img src="/explore.svg" alt="" />
+                    Explore our AI chat
+                </Link>
+                <Link className="mainLink contact" to="/contact">
+                    <img src="/contact-us.svg" alt="" />
+                    Contact
+                </Link>
             </>
             <hr />
-            <p className="title">RECENT CHATS</p>
+            <p className="title">Recent Chats</p>
             <div className="list">
-                {chatList?.map((chat: any) => (
-                    <Link
+                {chatList && [...chatList].reverse().map((chat: any) => (
+                    <NavLink
                         className="chatListItemLink"
                         key={chat._id}
                         to={`/dashboard/chats/${chat._id}`}
                     >
                         {chat.title}
-                    </Link>
+                    </NavLink>
                 ))}
             </div>
-            <hr />
-            <div className="upgrade">
+            <Link className="mainLink upgrade" to="/upgrade">
+                <img src="/upgrade-icon.svg" alt="" />
                 <div className="text">
-                    <span>Upgrade to pro version</span>
+                    <span>Upgrade plans</span>
+                    <br />
+                    <span className="subText">More access to the best features of our AI chat</span>
                 </div>
-            </div>
+            </Link>
         </div>
     )
 }

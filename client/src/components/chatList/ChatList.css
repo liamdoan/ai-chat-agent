@@ -2,19 +2,124 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 
-    .chatListItemLink {
+    .functionalLinks {
+        background-color: #242424;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        padding: 5px 7px;
+    }
+
+    .title {
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0;
+        padding: 5px 7px;
+    }
+
+    .chatListItemLink,
+    .mainLink {
+        color: white;
         margin: 0;
         padding: 5px 7px;
         border-radius: 8px;
+
+        &:hover {
+            background-color: rgb(67, 67, 67);
+        }
+    }
+
+    .mainLink {
+        font-size: 1rem;
+
+        &.createNewChat {
+            float: right;
+            width: 2.3rem;
+            height: 2.3rem;
+    
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        &.explore,
+        &.contact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+    
+            img {
+                width: 1.2rem;
+                height: auto;
+            }
+        }
+    }
+
+    .chatListItemLink {
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        position: relative;
+        background-color: transparent;
+
+        /* NavLink has native active state */
+        &.active {
+            background-color: rgb(92, 92, 92);
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(36, 36, 36, 0), rgba(36, 36, 36, 1));
+            pointer-events: none;
+        }
     }
 
     hr {
-        border: none;
-        height: 2px;
+        border: 1px solid gray;
+        height: 1px;
         background-color: gray;
-        opacity: 0.4;
+        opacity: 0.2;
         border-radius: 5px;
         margin: 1rem 0
+    }
+
+    .upgrade {
+        position: sticky;
+        bottom: 0;
+        background-color: #242424;
+        padding: 1rem 7px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        
+        img {
+            width: 1.2rem;
+            height: auto;
+        }
+
+        .text {
+            width: 100%;
+
+            .subText {
+                width: 80%;
+                display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 0.8rem;
+                color: rgba(255, 255, 255, 0.7);
+            }
+        }
     }
 }
