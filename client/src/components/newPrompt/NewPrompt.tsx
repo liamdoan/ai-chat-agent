@@ -25,6 +25,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     const [prompts, setPrompts] = useState<string | undefined> ("");
     const [submittedPrompts, setSubmittedPrompts] = useState<string | undefined> ("");
     const [generatedAnswers, setGeneratedAnswers] = useState<string | undefined> ("");
+    const [submittedImage, setSubmittedImage] = useState<string | undefined>(undefined);
     const [img, setImg] = useState<ImgUploadStateType>({
         isLoading: false,
         error: "",
@@ -128,11 +129,18 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         if (!prompts) return;
 
         const currentPrompt = prompts; // store current prompt value
-        const currentImage = img.dbData.url; // store current image URL
+        const currentImage = img.dbData.url; // store current image url
         setSubmittedPrompts(currentPrompt);
+        setSubmittedImage(currentImage);
         
         setPrompts("");
         handleResetTextareaHeight();
+
+        setImg({
+            isLoading: false,
+            error: "",
+            dbData: {}
+        });
 
         try {
             setGeneratedAnswers("");
@@ -162,12 +170,6 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 throw new Error("Failed to update chat.");
             }
 
-            setImg({
-                isLoading: false,
-                error: "",
-                dbData: {}
-            })
-
             setAllChat((prevChat: any) => ({
                 ...prevChat,
                 history: [
@@ -178,6 +180,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             }));
 
             setSubmittedPrompts("");
+            setSubmittedImage(undefined);
             setGeneratedAnswers("");
         } catch (error) {
             console.error("Error generating answers:", error);
@@ -200,7 +203,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             ))}
             {submittedPrompts && 
                 <div className="message user">
-                    {img.dbData?.url && <img src={img.dbData.url} alt="Uploaded" width={200} />}
+                    {submittedImage && <img src={submittedImage} alt="Uploaded" width={200} />}
                     {formatText(submittedPrompts)}
                 </div>
             }
@@ -244,3 +247,11 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
 }
 
 export default NewPrompt
+
+// explain the seperate rendering state of uploaded photo
+// -  when a photo is uploaded, setImg is called from Upload component
+// -  photo is rendered in the newForm element
+// -  when user message is sent, clear immediately the photo state (to remove it from newForm)
+// -  before clearing setImg, save photo URL to submittedImage state
+// -  now we can use the photo URL to render img where we need constantly, without having to wait for anything
+// -  clear submittedImage when user message is sent and saved successfully
