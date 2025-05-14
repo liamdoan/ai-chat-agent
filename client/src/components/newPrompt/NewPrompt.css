@@ -1,0 +1,82 @@
+.message {
+    max-width: 100%;
+    padding: 1rem;
+    margin: 5px 0;
+
+    &.user {
+        background-color: rgb(68, 68, 68);
+        border-radius: 20px;
+        max-width: 70%;
+        align-self: flex-end;
+    }
+}
+
+.endChatSeperator {
+    padding-bottom: 10rem;
+}
+
+.formWrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    max-height: 400px;
+
+    .newForm {
+        width: 70%;
+        margin: auto;
+        background-color: rgb(68, 68, 68);
+        color: white;
+        padding: 10px 1rem;
+        border: 1px solid rgba(118, 118, 118, 0.5);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    
+        textarea {
+            padding: 5px 0;
+            border: none;
+            background-color: transparent;
+            color: white;
+            resize: none;
+            max-height: 300px;
+    
+            &:focus {
+                outline: none;
+            }
+    
+            &::placeholder {
+                color: rgb(173, 173, 173)
+            }
+        }
+    
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+    
+            .submit-button {
+                background-color: transparent;
+                width: 25px;
+                height: auto;
+                border-radius: 50%;
+                border: 1px solid gray;
+                font-display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+
+    p {
+        font-size: 0.8rem;
+        text-align: center;
+        width: 70%;
+        margin: 0.4rem auto 0.4rem auto;
+    }
+}
