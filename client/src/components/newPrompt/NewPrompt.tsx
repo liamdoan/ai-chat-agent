@@ -2,7 +2,7 @@ import "./NewPrompt.css"
 import { IKImage } from "imagekitio-react";
 import Upload from "../upload/Upload";
 import { useEffect, useRef, useState } from "react"
-import { generateContent } from "../../utils/aiLibrary/gemini";
+import { generateContent, initializeChat, sendMessageToChat } from "../../utils/aiLibrary/gemini";
 import Markdown from "react-markdown";
 import { formatText } from "../../utils/formatText";
 
@@ -34,6 +34,13 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     const endChatSeperatorRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const hasGenerateAnswerForFirstMsgRef = useRef(false);
+
+    // initialize chat history history changes
+    useEffect(() => {
+        if (allChat?.history) {
+            initializeChat(allChat.history);
+        }
+    }, [allChat?.history]);
     
     // Generate answer when providing prompt from Dashboard
     // a.k.a when chat has only 1 message
@@ -45,7 +52,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 if (img.dbData.url) {
                     aiResponse = await generateContent([allChat.history[0].parts[0].text, img.dbData.url], handleStreamingUpdate) 
                 } else {
-                    aiResponse = await generateContent(allChat.history[0].parts[0].text, handleStreamingUpdate)
+                    aiResponse = await sendMessageToChat(allChat.history[0].parts[0].text, handleStreamingUpdate)
                 }
 
                 // save AI response to database
@@ -72,6 +79,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 })
 
                 // update chat history with AI answer
+                // prevent next message to remove just-generated response
                 setAllChat((prevChat: any) => ({
                     ...prevChat,
                     history: [
@@ -132,7 +140,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             if (img.dbData.url) {
                 aiResponse = await generateContent([currentPrompt, img.dbData.url], handleStreamingUpdate) 
             } else {
-                aiResponse = await generateContent(currentPrompt, handleStreamingUpdate)
+                aiResponse = await sendMessageToChat(currentPrompt, handleStreamingUpdate)
             }
 
             // save user message and AI answer to database
@@ -168,7 +176,6 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 ],
             }));
 
-            // Only clear states after successful update
             setSubmittedPrompts("");
             setGeneratedAnswers("");
         } catch (error) {
@@ -177,7 +184,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             setGeneratedAnswers("");
         }
     }
-  
+
     return (
         <>
             {img.isLoading && 
