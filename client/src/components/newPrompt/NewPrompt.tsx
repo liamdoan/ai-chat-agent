@@ -128,6 +128,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         if (!prompts) return;
 
         const currentPrompt = prompts; // store current prompt value
+        const currentImage = img.dbData.url; // store current image URL
         setSubmittedPrompts(currentPrompt);
         
         setPrompts("");
@@ -137,8 +138,8 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             setGeneratedAnswers("");
             
             let aiResponse;
-            if (img.dbData.url) {
-                aiResponse = await generateContent([currentPrompt, img.dbData.url], handleStreamingUpdate) 
+            if (currentImage) {
+                aiResponse = await generateContent([currentPrompt, currentImage], handleStreamingUpdate) 
             } else {
                 aiResponse = await sendMessageToChat(currentPrompt, handleStreamingUpdate)
             }
@@ -153,7 +154,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 body: JSON.stringify({
                     question: currentPrompt,
                     answer: aiResponse,
-                    img: img.dbData.url
+                    img: currentImage
                 })
             });
 
@@ -171,8 +172,8 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 ...prevChat,
                 history: [
                     ...prevChat.history,
-                    { role: "user", parts: [{ text: currentPrompt }] },
-                    { role: "model", parts: [{ text: aiResponse }], img: img.dbData.url || null },
+                    { role: "user", parts: [{ text: currentPrompt }], img: currentImage },
+                    { role: "model", parts: [{ text: aiResponse }] },
                 ],
             }));
 
@@ -187,31 +188,21 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
 
     return (
         <>
-            {img.isLoading && 
-                <div>Loading ...</div>
-            }
-            {img.dbData?.filePath && (
-                <IKImage
-                    urlEndpoint={urlEndpoint}
-                    path={img.dbData?.filePath}
-                    width="200"
-                    height="auto"
-                    loading="lazy"
-                />
-            )}
             {allChat?.history?.map((item: any, index: number) => (
                 <div key={index} className={`message ${item.role === "user" ? "user" : ""}`}>
                     {item.img && <img src={item.img} alt="Uploaded" width={200} />}
                     {item.role === "user" ? (
                         <div>{formatText(item.parts[0].text)}</div> // preserve line break
                     ) : (
-                    
                         <Markdown>{item.parts[0].text}</Markdown>
                     )}
                 </div>
             ))}
             {submittedPrompts && 
-                <div className="message user">{formatText(submittedPrompts)}</div>
+                <div className="message user">
+                    {img.dbData?.url && <img src={img.dbData.url} alt="Uploaded" width={200} />}
+                    {formatText(submittedPrompts)}
+                </div>
             }
             {/* make sure new prompt doesnt replace the previous one whose AI answer is not generated */}
             {generatedAnswers && !allChat?.history?.some((msg: any) => msg.parts[0].text === generatedAnswers) && 
@@ -222,6 +213,18 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             <div className="endChatSeperator" ref={endChatSeperatorRef}></div>
             <div className="formWrapper" ref={formWrapperRef}>
                 <form className="newForm" onSubmit={handleSubmit}>
+                    {img.isLoading &&
+                        <div>Loading ...</div>
+                    }
+                    {img.dbData?.filePath && (
+                        <IKImage
+                            urlEndpoint={urlEndpoint}
+                            path={img.dbData?.filePath}
+                            width="150"
+                            height="auto"
+                            loading="lazy"
+                        />
+                    )}
                     <textarea
                         ref={textareaRef}
                         value={prompts}
