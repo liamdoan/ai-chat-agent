@@ -63,22 +63,39 @@
             justify-content: space-between;
     
             .submit-button {
-                background-color: transparent;
-                width: 25px;
-                height: auto;
+                background-color: white;
+                border: 1px solid rgba(118, 118, 118, 0.5);
+                width: 2.2rem;
+                height: 2.2rem;          
                 border-radius: 50%;
-                border: 1px solid gray;
-                font-display: flex;
+                display: flex;
                 justify-content: center;
                 align-items: center;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgb(197, 197, 197);
+                }
+
+                &:disabled {
+                    background-color: rgb(118, 118, 118);
+                    cursor: not-allowed;
+                }
+
+                img {
+                    background-color: transparent;
+                    width: 60%;
+                    height: auto;
+                    border-radius: 50%;
+                }
             }
         }
     }
 
     p {
-        font-size: 0.8rem;
+        font-size: 0.7em;
         text-align: center;
-        width: 70%;
+        width: 60%;
         margin: 0.4rem auto 0.4rem auto;
     }
 }

@@ -237,10 +237,12 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>
-                        <button className="submit-button">^</button>
+                        <button className="submit-button" disabled={!prompts}>
+                            <img src="/up-arrow-icon.svg" alt="" />
+                        </button>
                     </div>
                 </form>
-                <p>Our AI agent can make mistakes. Check important info. See Cookie Preference</p>
+                <p>Our AI agent can make mistakes. Please double check the information before any major decisions.</p>
             </div>
         </>
     )
