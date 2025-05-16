@@ -3,7 +3,7 @@ import { IKImage } from "imagekitio-react";
 import Upload from "../upload/Upload";
 import { useEffect, useRef, useState } from "react"
 import { generateContent, initializeChat, sendMessageToChat } from "../../utils/aiLibrary/gemini";
-import Markdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import { formatText } from "../../utils/formatText";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
@@ -197,7 +197,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     {item.role === "user" ? (
                         <div>{formatText(item.parts[0].text)}</div> // preserve line break
                     ) : (
-                        <Markdown>{item.parts[0].text}</Markdown>
+                        <ReactMarkdown>{item.parts[0].text}</ReactMarkdown>
                     )}
                 </div>
             ))}
@@ -210,7 +210,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             {/* make sure new prompt doesnt replace the previous one whose AI answer is not generated */}
             {generatedAnswers && !allChat?.history?.some((msg: any) => msg.parts[0].text === generatedAnswers) && 
                 <div className="message">
-                    <Markdown>{generatedAnswers}</Markdown>
+                    <ReactMarkdown>{generatedAnswers}</ReactMarkdown>
                 </div>
             }
             <div className="endChatSeperator" ref={endChatSeperatorRef}></div>
