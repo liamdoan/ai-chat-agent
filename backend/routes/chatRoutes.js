@@ -1,6 +1,6 @@
 const express = require("express");
 const { getChatList } = require("../controllers/chat-controller/getChatListController");
-const { createNewChatThread, getContentOfSingleChat, sendMessagesToCurrentChat } = require("../controllers/chat-controller/singleChatController");
+const { createNewChatThread, getContentOfSingleChat, sendMessagesToCurrentChat } = require("../controllers/chat-controller/singleChatThreadController");
 const router = express.Router();
 
 router.get("/chats", getChatList);
