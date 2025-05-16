@@ -1,3 +1,4 @@
+const ImageKit = require("imagekit");
 const chatModel = require("../../database/models/chatModel");
 const userChatsModel = require("../../database/models/userChatsModel");
 
@@ -117,4 +118,16 @@ module.exports.sendMessagesToCurrentChat = async (req, res) => {
         console.error(error);
         res.status(500).send("Can't add more chat in this thread.")
      }
+}
+
+// upload image to chat with ImageKit
+const imagekit = new ImageKit({
+    urlEndpoint: process.env.IMAGE_KIT_ENDPOINT,
+    publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY
+});
+
+module.exports.uploadImageToChat = async (req, res) => {
+    const result = imagekit.getAuthenticationParameters();
+    res.send(result);
 }
