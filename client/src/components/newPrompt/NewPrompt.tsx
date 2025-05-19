@@ -49,11 +49,16 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         const generateAiAnswerForFirstMessage = async () => {
             let aiResponse: string | undefined = "";
 
+            // currently, "gemini-2.0-flash" model can't directly process
+            // img inputs within sendMessageToChat function,
+            // hence the conditions
             try {
-                if (img.dbData.url) {
-                    aiResponse = await generateContent([allChat.history[0].parts[0].text, img.dbData.url], handleStreamingUpdate) 
+                // get img data from chat history instead of local state
+                const firstMessage = allChat.history[0];
+                if (firstMessage.img) {
+                    aiResponse = await generateContent([firstMessage.parts[0].text, firstMessage.img], handleStreamingUpdate) 
                 } else {
-                    aiResponse = await sendMessageToChat(allChat.history[0].parts[0].text, handleStreamingUpdate)
+                    aiResponse = await sendMessageToChat(firstMessage.parts[0].text, handleStreamingUpdate)
                 }
 
                 // save AI response to database
@@ -65,7 +70,6 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     },
                     body: JSON.stringify({
                         answer: aiResponse,
-                        img: img.dbData.url
                     })
                 });
 
@@ -85,7 +89,10 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     ...prevChat,
                     history: [
                         ...prevChat.history,
-                        { role: "model", parts: [{ text: aiResponse }], img: img.dbData.url || null }
+                        { 
+                            role: "model", 
+                            parts: [{ text: aiResponse }]
+                        }
                     ]
                 }));
 

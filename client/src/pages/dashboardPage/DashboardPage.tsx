@@ -2,6 +2,16 @@ import { useNavigate } from "react-router-dom";
 import "./DashboardPage.css"
 import { useFetchChatListContext } from "../../utils/context/fetchChatListContext";
 import { useState } from "react";
+import { IKImage } from "imagekitio-react";
+import Upload from "../../components/upload/Upload";
+
+const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
+
+interface ImgUploadStateType {
+    isLoading: boolean,
+    error: string;
+    dbData: any
+}
 
 const DashboardPage = () => {
     //add userId later when integrating AUTH model into this project
@@ -9,6 +19,11 @@ const DashboardPage = () => {
     const navigate = useNavigate();
     const {fetchChatList} = useFetchChatListContext();
     const [prompts, setPrompts] = useState<string | undefined> ("");
+    const [img, setImg] = useState<ImgUploadStateType>({
+        isLoading: false,
+        error: "",
+        dbData: {}
+    });
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -22,7 +37,11 @@ const DashboardPage = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({userId: userId ,text: prompts})
+                body: JSON.stringify({
+                    userId: userId,
+                    text: prompts,
+                    img: img.dbData.url || null
+                })
             })
 
             if (!response.ok) {
@@ -63,6 +82,18 @@ const DashboardPage = () => {
             </div>
             <div className="formContainer">
                 <form className="newForm" onSubmit={handleSubmit}>
+                    {img.isLoading &&
+                        <div>Loading ...</div>
+                    }
+                    {img.dbData?.filePath && (
+                        <IKImage
+                            urlEndpoint={urlEndpoint}
+                            path={img.dbData?.filePath}
+                            width="150"
+                            height="auto"
+                            loading="lazy"
+                        />
+                    )}
                     <textarea
                         placeholder="Ask me something..."
                         value={prompts}
@@ -70,7 +101,8 @@ const DashboardPage = () => {
                         onInput={handleExpandTextareaHeight}
                     ></textarea>
                     <div className="buttons">
-                        <button  className="submit-button" disabled={!prompts}>
+                        <Upload setImg={setImg}/>
+                        <button className="submit-button" disabled={!prompts}>
                             <img src="/up-arrow-icon.svg" alt="" />
                         </button>
                     </div>

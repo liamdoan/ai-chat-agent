@@ -22,8 +22,8 @@ module.exports.getContentOfSingleChat = async (req, res) => {
 
 // create a new chat thread from DashboardPage
 module.exports.createNewChatThread = async (req, res) => {
-    const {userId, text} = req.body
-    console.log(text)
+    const {userId, text, img} = req.body
+    console.log({ text, img })
 
     try {
         const newChat = new chatModel({
@@ -32,7 +32,8 @@ module.exports.createNewChatThread = async (req, res) => {
                 role: "user",
                 parts: [{
                     text: text
-                }]
+                }],
+                ...(img && { img })
             }]
         })
 
