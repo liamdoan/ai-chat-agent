@@ -1,0 +1,18 @@
+.rootLayout {
+    padding: 1rem 0 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 4rem;
+    };
+
+    main {
+        flex: 1;
+        overflow: hidden;
+    }
+}
