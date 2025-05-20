@@ -4,7 +4,7 @@ import Upload from "../upload/Upload";
 import { useEffect, useRef, useState } from "react"
 import { generateContent, initializeChat, sendMessageToChat } from "../../utils/aiLibrary/gemini";
 import ReactMarkdown from "react-markdown";
-import { formatText } from "../../utils/formatText";
+import { formatText } from "../../utils/helpers/formatText";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
