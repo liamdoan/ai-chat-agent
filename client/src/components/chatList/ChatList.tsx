@@ -1,6 +1,6 @@
 import "./ChatList.css"
 import { Link, NavLink } from 'react-router-dom'
-import { useFetchChatListContext } from "../../utils/context/fetchChatListContext"
+import { useFetchChatListContext } from "../../core/context/fetchChatListContext"
 import ChatListItemMenu from "./ChatListItemMenu";
 
 const ChatList = () => {

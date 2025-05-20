@@ -2,7 +2,7 @@ import "./ChatPage.css"
 import NewPrompt from "../../components/newPrompt/NewPrompt";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFetchChatInThread } from "../../utils/hooks/useFetchChatInThread";
+import { useFetchChatInThread } from "../../core/hooks/useFetchChatInThread";
 
 const chatPage = () => {
     const {id} = useParams();

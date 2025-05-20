@@ -2,7 +2,7 @@ import "./ChatListItemMenu.css"
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
-import { useConfirmDeleteChatThread } from "../../utils/hooks/useConfirmDeleteThread";
+import { useConfirmDeleteChatThread } from "../../core/hooks/useConfirmDeleteThread";
 import { useNavigate } from "react-router-dom";
 
 interface ChatListItemMenuProps {

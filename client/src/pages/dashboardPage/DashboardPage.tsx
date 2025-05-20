@@ -2,7 +2,7 @@ import "./DashboardPage.css"
 import { useState } from "react";
 import { IKImage } from "imagekitio-react";
 import Upload from "../../components/upload/Upload";
-import { useCreateNewChatThread } from "../../utils/hooks/useCreateNewChatThread";
+import { useCreateNewChatThread } from "../../core/hooks/useCreateNewChatThread";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 

@@ -2,11 +2,11 @@ import "./NewPrompt.css"
 import { IKImage } from "imagekitio-react";
 import Upload from "../upload/Upload";
 import { useEffect, useRef, useState } from "react"
-import { initializeChat } from "../../utils/aiLibrary/gemini";
+import { initializeChat } from "../../core/aiLibrary/gemini";
 import ReactMarkdown from "react-markdown";
-import { formatText } from "../../utils/helpers/formatText";
-import { useGenerateAiAnswer } from "../../utils/hooks/useGenerateAiAnswer";
-import { useUpdateMessagesToChatThread } from "../../utils/hooks/useUpdateMessagesToChatThread";
+import { formatText } from "../../core/helpers/formatText";
+import { useGenerateAiAnswer } from "../../core/hooks/useGenerateAiAnswer";
+import { useUpdateMessagesToChatThread } from "../../core/hooks/useUpdateMessagesToChatThread";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 

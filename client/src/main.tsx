@@ -8,7 +8,7 @@ import DashboardPage from './pages/dashboardPage/DashboardPage.tsx';
 import ChatPage from './pages/chatPage/ChatPage.tsx';
 import RootLayout from './layouts/rootLayout/RootLayout.tsx';
 import SignupPage from './pages/signupPage/SignupPage.tsx';
-import { FetchChatListProvider } from './utils/context/fetchChatListContext.tsx';
+import { FetchChatListProvider } from './core/context/fetchChatListContext.tsx';
 
 const router = createBrowserRouter([
     {
