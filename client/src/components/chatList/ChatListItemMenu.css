@@ -1,4 +1,4 @@
-.chatListItemMenuWrapper {
+.chat-list-item-menu-wrapper {
     position: relative;
     color: white;
     border-radius: 0 8px 8px 0;
@@ -9,11 +9,50 @@
     justify-content: center;
 }
 
-.chatListItemMenuOptions {
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9998;
+    /* background: rgba(0, 0, 0, 0.2); */
+}
+
+.chat-list-item-menu-options {
     position: absolute;
     z-index: 9999;
-    background: red;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 0.8rem;
+    background-color: rgb(70, 70, 70);
+
+    .menu-option {
+        cursor: pointer;
+        padding: 0.5rem 2rem 0.5rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 6px;
+        
+        img {
+            width: 1.2rem;
+            height: auto
+        }
+
+        &:hover {
+            background-color: rgb(110, 110, 110);
+        }
+
+        &.delete {
+            color: red;
+
+            &:hover {
+                background-color: rgba(255, 0, 0, 0.3);
+            }
+        }
+    }
 }

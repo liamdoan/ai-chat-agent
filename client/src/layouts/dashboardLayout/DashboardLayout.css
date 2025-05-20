@@ -9,6 +9,7 @@
         padding: 0 1.5rem;
         overflow-y: auto;
         scrollbar-color: #5c5c5c #242424;
+        scrollbar-gutter: stable;
     }
 
     .content {
