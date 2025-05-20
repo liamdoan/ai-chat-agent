@@ -1,6 +1,8 @@
+import { useFetchChatListContext } from "../context/fetchChatListContext";
+
 interface UseUpdateMessagesToChatThreadProps {
     chatId: string;
-    setAllChat: (updater: (prevChat: any) => any) => void;
+    setAllChat: React.Dispatch<React.SetStateAction<any>>;
 }
 
 interface UpdateMessagesToChatThreadProps {
@@ -12,6 +14,8 @@ interface UpdateMessagesToChatThreadProps {
 const apiEndpointBasedUrl = import.meta.env.VITE_SERVER_URL;
 
 export const useUpdateMessagesToChatThread = ({ chatId, setAllChat }: UseUpdateMessagesToChatThreadProps) => {
+    const { fetchChatList } = useFetchChatListContext();
+
     const updateMessagesToChatThread = async ({ question, answer, imageUrl }: UpdateMessagesToChatThreadProps) => {
         try {
             const response = await fetch(`${apiEndpointBasedUrl}/api/chats/${chatId}`, {
@@ -45,7 +49,7 @@ export const useUpdateMessagesToChatThread = ({ chatId, setAllChat }: UseUpdateM
                         ],
                     };
                 } else {
-                    // for very first message, deadlt with at DashboardPage,
+                    // for very first message, dealt with at DashboardPage,
                     // update chat history with AI answer,
                     // prevent next message to remove just-generated response
                     return {
@@ -58,9 +62,10 @@ export const useUpdateMessagesToChatThread = ({ chatId, setAllChat }: UseUpdateM
                 }
             });
 
-            return true;
+            // Refresh the chat list to update the order
+            await fetchChatList();
         } catch (error) {
-            console.error("Error updating chat thread:", error);
+            console.error("Error updating chat:", error);
             throw error;
         }
     };

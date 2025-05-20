@@ -6,7 +6,7 @@ import { initializeChat } from "../../utils/aiLibrary/gemini";
 import ReactMarkdown from "react-markdown";
 import { formatText } from "../../utils/helpers/formatText";
 import { useGenerateAiAnswer } from "../../utils/hooks/useGenerateAiAnswer";
-import { useUpdateMessagesToChatThread } from "../../utils/hooks/useUpdateMessageToChatThread";
+import { useUpdateMessagesToChatThread } from "../../utils/hooks/useUpdateMessagesToChatThread";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
