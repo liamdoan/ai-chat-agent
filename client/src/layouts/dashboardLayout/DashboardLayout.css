@@ -1,0 +1,24 @@
+.dashboardLayout {
+    display: flex;
+    /* gap: 50px; */
+    height: 100%;
+
+    .menu {
+        flex: 1;
+        min-width: 300px;
+        padding: 0 1.5rem;
+        overflow-y: auto;
+        scrollbar-color: #5c5c5c #242424;
+    }
+
+    .content {
+        flex: 5;
+        background-color: rgb(48, 48, 48);
+        position: relative;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+    }
+}
