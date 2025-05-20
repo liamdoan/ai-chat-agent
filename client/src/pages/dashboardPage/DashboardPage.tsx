@@ -1,9 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import "./DashboardPage.css"
-import { useFetchChatListContext } from "../../utils/context/fetchChatListContext";
 import { useState } from "react";
 import { IKImage } from "imagekitio-react";
 import Upload from "../../components/upload/Upload";
+import { useCreateNewChatThread } from "../../utils/hooks/useCreateNewChatThread";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -14,10 +13,8 @@ interface ImgUploadStateType {
 }
 
 const DashboardPage = () => {
-    //add userId later when integrating AUTH model into this project
+    // add userId later when integrating AUTH model into this project
     const userId = "12345";
-    const navigate = useNavigate();
-    const {fetchChatList} = useFetchChatListContext();
     const [prompts, setPrompts] = useState<string | undefined> ("");
     const [img, setImg] = useState<ImgUploadStateType>({
         isLoading: false,
@@ -25,38 +22,22 @@ const DashboardPage = () => {
         dbData: {}
     });
 
+    const { createNewChatThread } = useCreateNewChatThread({ userId });
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         if (!prompts) return;
 
         try {
-            const response = await fetch("http://localhost:5000/api/chats", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                    text: prompts,
-                    img: img.dbData.url || null
-                })
-            })
-
-            if (!response.ok) {
-                throw new Error("Something is wrong when creating a new chat...")
-            };
-
-            const data = await response.json();
-
-            await fetchChatList();
-            
-            navigate(`/dashboard/chats/${data._id}`)
+            await createNewChatThread({
+                prompt: prompts,
+                imageUrl: img.dbData.url || null
+            });
         } catch (error) {
             console.error("Something is wrong, cant create a new chat.", error)
         }
-    }
+    };
 
     const handleExpandTextareaHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         e.target.style.height = "auto";
