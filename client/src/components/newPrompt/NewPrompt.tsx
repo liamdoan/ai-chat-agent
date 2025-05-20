@@ -2,9 +2,11 @@ import "./NewPrompt.css"
 import { IKImage } from "imagekitio-react";
 import Upload from "../upload/Upload";
 import { useEffect, useRef, useState } from "react"
-import { generateContent, initializeChat, sendMessageToChat } from "../../utils/aiLibrary/gemini";
+import { initializeChat } from "../../utils/aiLibrary/gemini";
 import ReactMarkdown from "react-markdown";
 import { formatText } from "../../utils/helpers/formatText";
+import { useGenerateAiAnswer } from "../../utils/hooks/useGenerateAiAnswer";
+import { useUpdateMessagesToChatThread } from "../../utils/hooks/useUpdateMessageToChatThread";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -30,11 +32,24 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         isLoading: false,
         error: "",
         dbData: {}
-    })
+    });
 
     const endChatSeperatorRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const hasGenerateAnswerForFirstMsgRef = useRef(false);
+
+    const handleStreamingUpdate = (newChunk: string) => {
+        setGeneratedAnswers(prevText => prevText + newChunk);
+    };
+
+    const { generateAiAnswer } = useGenerateAiAnswer({
+        onStreamingUpdate: handleStreamingUpdate
+    });
+
+    const { updateMessagesToChatThread } = useUpdateMessagesToChatThread({
+        chatId,
+        setAllChat
+    });
 
     // initialize chat history history changes
     useEffect(() => {
@@ -47,61 +62,36 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     // a.k.a when chat has only 1 message
     useEffect(() => {
         const generateAiAnswerForFirstMessage = async () => {
-            let aiResponse: string | undefined = "";
-
-            // currently, "gemini-2.0-flash" model can't directly process
-            // img inputs within sendMessageToChat function,
-            // hence the conditions
             try {
                 // get img data from chat history instead of local state
                 const firstMessage = allChat.history[0];
-                if (firstMessage.img) {
-                    aiResponse = await generateContent([firstMessage.parts[0].text, firstMessage.img], handleStreamingUpdate) 
-                } else {
-                    aiResponse = await sendMessageToChat(firstMessage.parts[0].text, handleStreamingUpdate)
+                if (!firstMessage?.parts?.[0]?.text) {
+                    throw new Error("Invalid message format");
                 }
 
-                // save AI response to database
-                const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
-                    method: "PUT",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        answer: aiResponse,
-                    })
+                const aiResponse = await generateAiAnswer({
+                    prompt: firstMessage.parts[0].text,
+                    imageUrl: firstMessage.img
                 });
 
-                if (!response.ok) {
-                    throw new Error("Failed to update chat with AI response.");
+                if (!aiResponse) {
+                    throw new Error("No response from AI");
                 }
+
+                await updateMessagesToChatThread({
+                    answer: aiResponse
+                });
 
                 setImg({
                     isLoading: false,
                     error: "",
                     dbData: {}
-                })
-
-                // update chat history with AI answer
-                // prevent next message to remove just-generated response
-                setAllChat((prevChat: any) => ({
-                    ...prevChat,
-                    history: [
-                        ...prevChat.history,
-                        { 
-                            role: "model", 
-                            parts: [{ text: aiResponse }]
-                        }
-                    ]
-                }));
+                });
 
                 setGeneratedAnswers("");
 
             } catch (error) {
-                console.error("Error generating answers:", error)
-                console.log("this settAllChat in useEffect is called in error")
-
+                console.error("Error generating answers:", error);
             }
         }
 
@@ -109,7 +99,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             generateAiAnswerForFirstMessage();
             hasGenerateAnswerForFirstMsgRef.current = true;
         }
-    }, [allChat?.history, hasGenerateAnswerForFirstMsgRef])
+    }, [allChat?.history, hasGenerateAnswerForFirstMsgRef]);
 
     useEffect(() => {
         endChatSeperatorRef.current?.scrollIntoView({behavior: "smooth"});
@@ -124,10 +114,6 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
         }
-    }
-
-    const handleStreamingUpdate = (newChunk: string) => {
-        setGeneratedAnswers(prevText => prevText + newChunk)
     }
 
     const handleSubmit = async (e: any) => {
@@ -152,39 +138,20 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         try {
             setGeneratedAnswers("");
             
-            let aiResponse;
-            if (currentImage) {
-                aiResponse = await generateContent([currentPrompt, currentImage], handleStreamingUpdate) 
-            } else {
-                aiResponse = await sendMessageToChat(currentPrompt, handleStreamingUpdate)
-            }
-
-            // save user message and AI answer to database
-            const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
-                method: "PUT",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    question: currentPrompt,
-                    answer: aiResponse,
-                    img: currentImage
-                })
+            const aiResponse = await generateAiAnswer({
+                prompt: currentPrompt,
+                imageUrl: currentImage
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to update chat.");
+            if (!aiResponse) {
+                throw new Error("No response from AI");
             }
 
-            setAllChat((prevChat: any) => ({
-                ...prevChat,
-                history: [
-                    ...prevChat.history,
-                    { role: "user", parts: [{ text: currentPrompt }], img: currentImage },
-                    { role: "model", parts: [{ text: aiResponse }] },
-                ],
-            }));
+            await updateMessagesToChatThread({
+                question: currentPrompt,
+                answer: aiResponse,
+                imageUrl: currentImage
+            });
 
             setSubmittedPrompts("");
             setSubmittedImage(undefined);
@@ -194,7 +161,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             // Don't clear submittedPrompts on error
             setGeneratedAnswers("");
         }
-    }
+    };
 
     return (
         <>
