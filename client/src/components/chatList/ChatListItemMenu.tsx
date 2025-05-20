@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import { useConfirmDeleteChatThread } from "../../utils/hooks/useConfirmDeleteThread";
+import { useNavigate } from "react-router-dom";
 
 interface ChatListItemMenuProps {
     chatId: string;
@@ -17,9 +18,11 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }
     const buttonRef = useRef<HTMLDivElement>(null);
     const menuContainer = document.querySelector('.menu') as HTMLElement;
 
+    const navigate = useNavigate();
+
     const { confirmDeleteChatThread } = useConfirmDeleteChatThread({
         chatId,
-        onSuccess: () => setIsDeletePopupVisible(false),
+        onSuccess: () => {setIsDeletePopupVisible(false), navigate("/dashboard")},
         onError: (error) => {
             console.error("Failed to delete chat:", error);
         }

@@ -1,4 +1,5 @@
 const userChatsModel = require("../../database/models/userChatsModel");
+const chatModel = require("../../database/models/chatModel");
 
 // get all chats in ChatList
 module.exports.getChatList = async (req, res) => {
@@ -27,31 +28,18 @@ module.exports.deleteChatThread = async (req, res) => {
     const chatId = req.params.id;
 
     try {
-        // find user's chat document,
-        // update by pulling the chat with matching _id
-        const userChatsDocument = await userChatsModel.findOneAndUpdate(
-            { userId: userId },
-            { $pull: 
-                { chats: 
-                    { _id: chatId } 
-                }
-            },
-            { new: true } // return updated document
-        );
+        // Delete from both collections, chats and userchats
+        await Promise.all([
+            userChatsModel.updateOne(
+                { userId },
+                { $pull: { chats: { _id: chatId } } }
+            ),
+            chatModel.deleteOne({ _id: chatId, userId })
+        ]);
 
-        if (!userChatsDocument) {
-            return res.status(404).send("User chat document not found.");
-        }
-
-        // check if thread was successfully removed
-        const chatThreadExists = userChatsDocument.chats.some(chat => chat._id === chatId);
-        if (!chatThreadExists) {
-            return res.status(200).send("Chat thread has been deleted.");
-        }
-
-        res.status(200).send("Chat thread deleted ok!");
+        res.status(200).send("Chat deleted successfully");
     } catch (error) {
         console.error(error);
-        res.status(500).send("Can't delete chat thread.")
+        res.status(500).send("Failed to delete chat");
     }
 }
