@@ -1,44 +1,25 @@
 import "./ChatPage.css"
 import NewPrompt from "../../components/newPrompt/NewPrompt";
-import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useFetchChatInThread } from "../../utils/hooks/useFetchChatInThread";
 
 const chatPage = () => {
     const {id} = useParams();
-    const [allChat, setAllChat] = useState<any>(null);
     const bottomChatPageRef = useRef<HTMLDivElement>(null);
     const chatPageComponentRef = useRef<HTMLDivElement | null>(null);
     const formWrapperRef = useRef<HTMLDivElement | null>(null);
+    const navigate = useNavigate();
+
+    const { allChat, setAllChat, loading, isDoneFetching, error } = useFetchChatInThread(id);
 
     useEffect(() => {
-        const fetchChatInThread = async () => {
-            try {
-                const response = await fetch(`http://localhost:5000/api/chats/${id}`, {
-                    credentials: "include"
-                })
-
-                if (!response.ok) {
-                    throw new Error("Can't fetch all chats.")
-                }
-
-                const data = await response.json();
-
-                if(!data || Object.keys(data).length === 0) {
-                    setAllChat(null);
-                    return;
-                }
-
-                setAllChat(data);
-            } catch (error) {
-                console.error(error)
-            }
-        };
-
-        fetchChatInThread();
-
-        // id in dependency is to render ChatPage correspondingly to the id 
-        // after clicking on the chat in ChatList
-    }, [id]);
+        if (isDoneFetching && !allChat) {
+            navigate("/dashboard");
+            return;
+        }
+        
+    }, [isDoneFetching]);
 
     useEffect(() => {
         if (allChat?.history) {
