@@ -1,6 +1,7 @@
 import "./ChatList.css"
 import { Link, NavLink } from 'react-router-dom'
 import { useFetchChatListContext } from "../../utils/context/fetchChatListContext"
+import ChatListItemMenu from "./ChatListItemMenu";
 
 const ChatList = () => {
     const {chatList} = useFetchChatListContext();
@@ -31,7 +32,10 @@ const ChatList = () => {
                         key={chat._id}
                         to={`/dashboard/chats/${chat._id}`}
                     >
-                        {chat.title}
+                        <p className="chatListItemTitle">{chat.title}</p>
+                        <div className="chatListItemMenu">
+                            <ChatListItemMenu />
+                        </div>
                     </NavLink>
                 ))}
             </div>

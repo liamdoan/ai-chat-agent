@@ -24,7 +24,6 @@
     .mainLink {
         color: white;
         margin: 0;
-        padding: 5px 7px;
         border-radius: 8px;
 
         &:hover {
@@ -34,6 +33,7 @@
 
     .mainLink {
         font-size: 1rem;
+        padding: 5px 7px;
 
         &.createNewChat {
             float: right;
@@ -60,26 +60,39 @@
     }
 
     .chatListItemLink {
-        font-size: 0.85rem;
-        white-space: nowrap;
-        overflow: hidden;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
         background-color: transparent;
 
-        /* NavLink has native active state */
+        .chatListItemTitle {
+            padding: 5px 7px;
+            white-space: nowrap;
+            width: calc(100% - 1.6rem);
+            -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+            mask-image: linear-gradient(to right, black 80%, transparent 100%);
+        }
+
+        /* NavLink has native active state/className */
+        &:hover,
+        &.active {
+            .chatListItemMenu {
+                display: flex;
+            }
+        }
+
         &.active {
             background-color: rgb(92, 92, 92);
         }
 
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 20%;
+        .chatListItemMenu {
+            border-radius: 0 8px 8px 0;
             height: 100%;
-            background: linear-gradient(to right, rgba(36, 36, 36, 0), rgba(36, 36, 36, 1));
-            pointer-events: none;
+            width: 1.5rem;
+            font-weight: 700;
+            display: none;
         }
     }
 
