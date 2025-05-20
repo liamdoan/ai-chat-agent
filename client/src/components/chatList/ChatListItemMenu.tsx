@@ -1,11 +1,20 @@
 import "./ChatListItemMenu.css"
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import ConfirmDeletePopup from "./ConfirmDeletePopup";
+import { useFetchChatListContext } from "../../utils/context/fetchChatListContext";
 
-const ChatListItemMenu = () => {
+interface ChatListItemMenuProps {
+    chatId: string;
+    chatTitle: string;
+}
+
+const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }) => {
     const [isItemMenuVisible, setIsItemMenuVisible] = useState<boolean>(false);
+    const [isDeletePopupVisible, setIsDeletePopupVisible] = useState<boolean>(false);
     const [coords, setCoords] = useState<{ top: number, left: number } | null>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
+    const { fetchChatList } = useFetchChatListContext();
 
     const menuContainer = document.querySelector('.menu') as HTMLElement;
 
@@ -43,6 +52,36 @@ const ChatListItemMenu = () => {
         };
     }, [isItemMenuVisible]);
 
+    const handleClickDeleteButtonFromMenu = () => {
+        setIsDeletePopupVisible(true);
+        setIsItemMenuVisible(false);
+    }
+
+    const handleConfirmDeleteThread = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+                method: 'DELETE',
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete chat');
+            }
+
+            // Fetch updated chat list,
+            // make it consistent as DashboardPage
+            await fetchChatList();
+            
+            setIsDeletePopupVisible(false);
+        } catch (error) {
+            console.error("Error deleting chat:", error);
+        }
+    }
+
+    const handleCancelDeleteThread = () => {
+        setIsDeletePopupVisible(false);
+    }
+
   return (
     <div
         ref={buttonRef}
@@ -72,18 +111,30 @@ const ChatListItemMenu = () => {
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        setIsItemMenuVisible(false);
                     }}
                 >
                     <p className="menu-option">
                         <img src="/pen-icon.svg" alt="rename" />
                         Rename
                     </p>
-                    <p className="menu-option delete">
+                    <p
+                        className="menu-option delete"
+                        onClick={handleClickDeleteButtonFromMenu}
+                    >
                         <img src="/trashcan-icon.svg" alt="delete" />
                         Delete
                     </p>
                 </div>
             </div>,
+            document.getElementById("menu-portal")!
+        ) : null}
+        {isDeletePopupVisible && chatId ? createPortal(
+            <ConfirmDeletePopup
+                chatTitle={chatTitle}
+                handleConfirmDeleteThread={handleConfirmDeleteThread}
+                handleCancelDeleteThread={handleCancelDeleteThread}
+            />,
             document.getElementById("menu-portal")!
         ) : null}
     </div>

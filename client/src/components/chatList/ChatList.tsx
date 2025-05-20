@@ -34,7 +34,10 @@ const ChatList = () => {
                     >
                         <p className="chatListItemTitle">{chat.title}</p>
                         <div className="chatListItemMenu">
-                            <ChatListItemMenu />
+                            <ChatListItemMenu 
+                                chatId={chat._id}
+                                chatTitle={chat.title}
+                            />
                         </div>
                     </NavLink>
                 ))}
