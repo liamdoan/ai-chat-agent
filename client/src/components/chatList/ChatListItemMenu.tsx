@@ -6,22 +6,22 @@ import { useConfirmDeleteChatThread } from "../../core/hooks/useConfirmDeleteThr
 import { useNavigate } from "react-router-dom";
 
 interface ChatListItemMenuProps {
-    chatId: string;
-    chatTitle: string;
+    chatThreadId: string;
+    chatThreadTitle: string;
+    onRenameTitle: () => void;
 }
 
-const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }) => {
+const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatThreadId, chatThreadTitle, onRenameTitle }) => {
     const [isItemMenuVisible, setIsItemMenuVisible] = useState<boolean>(false);
     const [isDeletePopupVisible, setIsDeletePopupVisible] = useState<boolean>(false);
     const [coords, setCoords] = useState<{ top: number, left: number } | null>(null);
     
     const buttonRef = useRef<HTMLDivElement>(null);
     const menuContainer = document.querySelector('.menu') as HTMLElement;
-
     const navigate = useNavigate();
 
     const { confirmDeleteChatThread } = useConfirmDeleteChatThread({
-        chatId,
+        chatId: chatThreadId,
         onSuccess: () => {setIsDeletePopupVisible(false), navigate("/dashboard")},
         onError: (error) => {
             console.error("Failed to delete chat:", error);
@@ -61,6 +61,11 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }
             }
         };
     }, [isItemMenuVisible]);
+
+    const handleClickRenameButtonFromMenu = () => {
+        onRenameTitle(); // call fns from parent ChatListItem => click to setIsEditing(true)
+        setIsItemMenuVisible(false);
+    }
 
     const handleClickDeleteButtonFromMenu = () => {
         setIsDeletePopupVisible(true);
@@ -107,7 +112,10 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }
                             setIsItemMenuVisible(false);
                         }}
                     >
-                        <p className="menu-option">
+                        <p 
+                            className="menu-option"
+                            onClick={handleClickRenameButtonFromMenu}
+                        >
                             <img src="/pen-icon.svg" alt="rename" />
                             Rename
                         </p>
@@ -122,9 +130,9 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatId, chatTitle }
                 </div>,
                 document.getElementById("menu-portal")!
             ) : null}
-            {isDeletePopupVisible && chatId ? createPortal(
+            {isDeletePopupVisible && chatThreadId ? createPortal(
                 <ConfirmDeletePopup
-                    chatTitle={chatTitle}
+                    chatTitle={chatThreadTitle}
                     handleConfirmDeleteThread={handleConfirmDeleteThread}
                     handleCancelDeleteThread={handleCancelDeleteThread}
                 />,

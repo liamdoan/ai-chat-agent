@@ -1,10 +1,11 @@
 import "./ChatList.css"
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useFetchChatListContext } from "../../core/context/fetchChatListContext"
-import ChatListItemMenu from "./ChatListItemMenu";
+import ChatListItem from "./ChatListItem";
+import { ChatThreadType } from "../../core/types/type";
 
 const ChatList = () => {
-    const {chatList} = useFetchChatListContext();
+    const { chatList } = useFetchChatListContext();
 
     return (
         <div className='chatList'>
@@ -26,20 +27,11 @@ const ChatList = () => {
             <hr />
             <p className="title">Recent Chats</p>
             <div className="list">
-                {chatList && [...chatList].reverse().map((chat: any) => (
-                    <NavLink
-                        className="chatListItemLink"
-                        key={chat._id}
-                        to={`/dashboard/chats/${chat._id}`}
-                    >
-                        <p className="chatListItemTitle">{chat.title}</p>
-                        <div className="chatListItemMenu">
-                            <ChatListItemMenu 
-                                chatId={chat._id}
-                                chatTitle={chat.title}
-                            />
-                        </div>
-                    </NavLink>
+                {chatList && [...chatList].reverse().map((chatThread: ChatThreadType) => (
+                    <ChatListItem 
+                        key={chatThread._id}
+                        chatThread={chatThread}
+                    />
                 ))}
             </div>
             <Link className="mainLink upgrade" to="/upgrade">
@@ -51,7 +43,7 @@ const ChatList = () => {
                 </div>
             </Link>
         </div>
-    )
-}
+    );
+};
 
-export default ChatList
+export default ChatList;
