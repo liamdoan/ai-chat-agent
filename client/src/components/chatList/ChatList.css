@@ -3,6 +3,11 @@
     flex-direction: column;
     height: 100%;
     position: relative;
+    padding-right: 0.8rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-color: #5c5c5c #242424;
+    scrollbar-gutter: stable;
 
     .functionalLinks {
         background-color: #242424;
@@ -115,6 +120,7 @@
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
+        margin-top: auto;
         
         img {
             width: 1.2rem;
