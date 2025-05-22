@@ -51,19 +51,7 @@ const DashboardPage = () => {
     return (
         <div className='dashboardPage'>
             <div className="texts">
-                <div className="logo">LOGO</div>
-                <h1>My AI</h1>
-                <div className="options">
-                    <div className="option">
-                        Create new chat
-                    </div>
-                    <div className="option">
-                        Analyze image
-                    </div>
-                    <div className="option">
-                        Help with my code
-                    </div>
-                </div>
+                <p>What can I help you with?</p>
             </div>
             <div className="formContainer">
                 <form className="newForm" onSubmit={handleSubmit}>
