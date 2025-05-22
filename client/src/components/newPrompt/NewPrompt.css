@@ -2,6 +2,7 @@
     max-width: 100%;
     padding: 1rem;
     margin: 5px 0;
+    font-size: 0.9rem;
 
     &.user {
         background-color: rgb(68, 68, 68);
@@ -25,7 +26,7 @@
 
     p {
         margin: 1rem 0;
-        line-height: 1.6;
+        line-height: 1.8;
     }
 
     em {
@@ -84,7 +85,8 @@
     max-height: 400px;
 
     .newForm {
-        width: 70%;
+        width: 60%;
+        min-width: 500px;
         margin: auto;
         background-color: rgb(68, 68, 68);
         color: white;
