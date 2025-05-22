@@ -7,7 +7,8 @@ import ReactMarkdown from "react-markdown";
 import { formatText } from "../../core/helpers/formatText";
 import { useGenerateAiAnswer } from "../../core/hooks/useGenerateAiAnswer";
 import { useUpdateMessagesToChatThread } from "../../core/hooks/useUpdateMessagesToChatThread";
-import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../core/helpers/textAreaHeightmeasure";
+import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
+import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -153,6 +154,13 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        handleKeyDownSubmit(e, {
+            onEnter: () => handleSubmit(e),
+            onShiftEnter: () => setPrompts(prev => prev + '\n')
+        })
+    }
+
     return (
         <>
             {allChat?.history?.map((item: any, index: number) => (
@@ -200,6 +208,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                         onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                             handleExpandTextareaHeight(e)
                         }}
+                        onKeyDown={handleKeyDown}
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>

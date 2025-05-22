@@ -5,6 +5,7 @@ import ChatListItemMenu from "./ChatListItemMenu";
 import { useFetchChatListContext } from "../../core/context/fetchChatListContext";
 import { useEditChatThreadTitle } from "../../core/hooks/useEditChatThreadTitle";
 import { ChatThreadType } from "../../core/types/type";
+import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 
 interface ChatListItemProps {
     chatThread: ChatThreadType;
@@ -46,14 +47,14 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chatThread }) => {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleSubmit();
-        } else if (e.key === 'Escape') {
-            setTitle(chatThread.title);
-            setIsEditing(false);
-        }
-    };
+        handleKeyDownSubmit(e, {
+            onEnter: handleSubmit,
+            onEscape: () => {
+                setTitle(chatThread.title);
+                setIsEditing(false);
+            }
+        })
+    }
 
     if (isEditing) {
         return (

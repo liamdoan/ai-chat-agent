@@ -3,7 +3,8 @@ import { useState } from "react";
 import { IKImage } from "imagekitio-react";
 import Upload from "../../components/upload/Upload";
 import { useCreateNewChatThread } from "../../core/hooks/useCreateNewChatThread";
-import { handleExpandTextareaHeight } from "../../core/helpers/textAreaHeightmeasure";
+import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
+import { handleExpandTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -39,6 +40,13 @@ const DashboardPage = () => {
             console.error("Something is wrong, cant create a new chat.", error)
         }
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        handleKeyDownSubmit(e, {
+            onEnter: () => handleSubmit(e),
+            onShiftEnter: () => setPrompts(prev => prev + '\n')
+        })
+    }
 
     return (
         <div className='dashboardPage'>
@@ -78,6 +86,7 @@ const DashboardPage = () => {
                         onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                             handleExpandTextareaHeight(e)
                         }}
+                        onKeyDown={handleKeyDown}
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>
