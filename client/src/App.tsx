@@ -4,7 +4,7 @@ function App() {
 
     return (
         <>
-            hello
+            {/* this project use CreateBrowserRouter, all routes are defined in the main.tsx file */}
         </>
     )
 }

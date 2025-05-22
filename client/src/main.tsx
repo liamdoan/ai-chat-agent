@@ -9,6 +9,9 @@ import ChatPage from './pages/chatPage/ChatPage.tsx';
 import RootLayout from './layouts/rootLayout/RootLayout.tsx';
 import SignupPage from './pages/signupPage/SignupPage.tsx';
 import { FetchChatListProvider } from './core/context/fetchChatListContext.tsx';
+import ExplorePage from './pages/explorePage/ExplorePage.tsx';
+import ContactPage from './pages/contact/ContactPage.tsx';
+import UpgradePage from './pages/upgradePage/UpgradePage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -34,6 +37,18 @@ const router = createBrowserRouter([
                         element: <ChatPage />,
                     },
                 ],
+            },
+            {
+                path: "/explore",
+                element: <ExplorePage />,
+            },
+            {
+                path: "/contact",
+                element: <ContactPage />,
+            },
+            {
+                path: "/upgrade",
+                element: <UpgradePage />,
             },
         ],
     },

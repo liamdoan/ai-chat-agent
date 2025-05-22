@@ -2,7 +2,10 @@ import React from 'react'
 
 const SignupPage = () => {
   return (
-    <div>signupPage</div>
+    <div>
+      <p>This is the Signup page</p>
+      <p>This page will be included when integrating with the AUTH-model project.</p>
+    </div>
   )
 }
 
