@@ -25,7 +25,7 @@ const ChatList = () => {
                 </Link>
             </>
             <hr />
-            <p className="title">Recent Chats</p>
+            <p className="section-title">Recent Chats</p>
             <div className="list">
                 {chatList && [...chatList].reverse().map((chatThread: ChatThreadType) => (
                     <ChatListItem 

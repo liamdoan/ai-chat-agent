@@ -5,7 +5,6 @@
     justify-content: space-between;
     font-size: 0.85rem;
     background-color: transparent;
-    color: white;
     margin: 0;
     border-radius: 8px;
 
@@ -14,7 +13,8 @@
     }
 
     .chatListItemTitle {
-        padding: 5px 7px;
+        color: white;
+        padding: 7px 7px;
         white-space: nowrap;
         width: calc(100% - 1.6rem);
         -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
