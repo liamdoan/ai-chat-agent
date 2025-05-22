@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { formatText } from "../../core/helpers/formatText";
 import { useGenerateAiAnswer } from "../../core/hooks/useGenerateAiAnswer";
 import { useUpdateMessagesToChatThread } from "../../core/hooks/useUpdateMessagesToChatThread";
+import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../core/helpers/textAreaHeightmeasure";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -105,17 +106,6 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         endChatSeperatorRef.current?.scrollIntoView({behavior: "smooth"});
     }, [submittedPrompts, generatedAnswers])
 
-    const handleExpandTextareaHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        e.target.style.height = "auto";
-        e.target.style.height = `${e.target.scrollHeight}px`;
-    };
-
-    const handleResetTextareaHeight = () => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-        }
-    }
-
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
@@ -127,7 +117,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         setSubmittedImage(currentImage);
         
         setPrompts("");
-        handleResetTextareaHeight();
+        handleResetTextareaHeight(textareaRef);
 
         setImg({
             isLoading: false,
@@ -207,7 +197,9 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                         value={prompts}
                         onChange={e => setPrompts(e.target.value)}
                         placeholder="Ask me something..."
-                        onInput={handleExpandTextareaHeight}
+                        onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                            handleExpandTextareaHeight(e)
+                        }}
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>

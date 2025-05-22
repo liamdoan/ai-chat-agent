@@ -3,6 +3,7 @@ import { useState } from "react";
 import { IKImage } from "imagekitio-react";
 import Upload from "../../components/upload/Upload";
 import { useCreateNewChatThread } from "../../core/hooks/useCreateNewChatThread";
+import { handleExpandTextareaHeight } from "../../core/helpers/textAreaHeightmeasure";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -37,11 +38,6 @@ const DashboardPage = () => {
         } catch (error) {
             console.error("Something is wrong, cant create a new chat.", error)
         }
-    };
-
-    const handleExpandTextareaHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        e.target.style.height = "auto";
-        e.target.style.height = `${e.target.scrollHeight}px`;
     };
 
     return (
@@ -79,7 +75,9 @@ const DashboardPage = () => {
                         placeholder="Ask me something..."
                         value={prompts}
                         onChange={e => setPrompts(e.target.value)}
-                        onInput={handleExpandTextareaHeight}
+                        onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                            handleExpandTextareaHeight(e)
+                        }}
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>
