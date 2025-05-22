@@ -4,11 +4,31 @@
     display: flex;
     flex-direction: column;
 
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
     header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 4rem;
+        padding: 1rem 4rem;
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .logo {
+                width: 3rem;
+                height: 3rem;
+            }
+            span {
+                font-size: 0.9rem;
+            }
+        }
+
     };
 
     main {
