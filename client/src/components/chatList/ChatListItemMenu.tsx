@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import { useConfirmDeleteChatThread } from "../../core/hooks/useConfirmDeleteThread";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface ChatListItemMenuProps {
     chatThreadId: string;
@@ -15,18 +15,12 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatThreadId, chatT
     const [isItemMenuVisible, setIsItemMenuVisible] = useState<boolean>(false);
     const [isDeletePopupVisible, setIsDeletePopupVisible] = useState<boolean>(false);
     const [coords, setCoords] = useState<{ top: number, left: number } | null>(null);
-    
     const buttonRef = useRef<HTMLDivElement>(null);
-    const menuContainer = document.querySelector('.menu') as HTMLElement;
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const { confirmDeleteChatThread } = useConfirmDeleteChatThread({
-        chatId: chatThreadId,
-        onSuccess: () => {setIsDeletePopupVisible(false), navigate("/dashboard")},
-        onError: (error) => {
-            console.error("Failed to delete chat:", error);
-        }
-    });
+    const menuContainer = document.querySelector('.menu') as HTMLElement;
+    const { confirmDeleteChatThread } = useConfirmDeleteChatThread();
 
     useEffect(() => {
         if (isItemMenuVisible && buttonRef.current) {
@@ -73,7 +67,19 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatThreadId, chatT
     }
 
     const handleConfirmDeleteThread = () => {
-        confirmDeleteChatThread();
+        confirmDeleteChatThread({
+            chatId: chatThreadId,
+            onSuccess: () => {
+                setIsDeletePopupVisible(false);
+
+                if (location.pathname === `/dashboard/chats/${chatThreadId}`) {
+                    navigate("/dashboard");
+                }
+            },
+            onError: (error) => {
+                console.error("Failed to delete chat:", error);
+            }
+        });
     }
 
     const handleCancelDeleteThread = () => {

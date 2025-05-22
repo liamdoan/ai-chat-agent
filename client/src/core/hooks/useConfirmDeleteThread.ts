@@ -1,6 +1,6 @@
 import { useFetchChatListContext } from "../context/fetchChatListContext";
 
-interface UseConfirmDeleteChatThreadProps {
+interface ConfirmDeleteChatThreadProps {
     chatId: string;
     onSuccess?: () => void;
     onError?: (error: Error) => void;
@@ -8,10 +8,10 @@ interface UseConfirmDeleteChatThreadProps {
 
 const apiEndpointBasedUrl = import.meta.env.VITE_SERVER_URL;
 
-export const useConfirmDeleteChatThread = ({ chatId, onSuccess, onError }: UseConfirmDeleteChatThreadProps) => {
+export const useConfirmDeleteChatThread = () => {
     const { fetchChatList } = useFetchChatListContext();
 
-    const confirmDeleteChatThread = async () => {
+    const confirmDeleteChatThread = async ({ chatId, onSuccess, onError }: ConfirmDeleteChatThreadProps) => {
         try {
             const response = await fetch(`${apiEndpointBasedUrl}/api/chats/${chatId}`, {
                 method: 'DELETE',
