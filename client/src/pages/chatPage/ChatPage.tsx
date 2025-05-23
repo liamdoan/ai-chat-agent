@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetchChatInThread } from "../../core/hooks/useFetchChatInThread";
 import LoadingText from "../../components/loading/LoadingText";
+import FailNotice from "../../components/failNotice/failNotice";
 import uiMessages from "../../core/messages/uiMessages_en.json";
 
 const chatPage = () => {
@@ -57,6 +58,12 @@ const chatPage = () => {
         <div className="chatPage" ref={chatPageComponentRef}>
             {loading ??
                 <LoadingText loadingText={uiMessages.chatHistoryLoading} />
+            }
+            {error &&
+                <FailNotice
+                    title={uiMessages.chatHistoryLoadingErrorTitle}
+                    description={uiMessages.chatHistoryLoadingErrorDescription}
+                />
             }
             <div className="wrapper">
                 <div className="chat">

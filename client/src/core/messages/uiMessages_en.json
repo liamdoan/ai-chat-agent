@@ -1,4 +1,5 @@
 {
     "chatHistoryLoading": "Loading chat history, please wait ...",
-    "chatHistoryLoadingError": "Error loading chat history, please try again later."
+    "chatHistoryLoadingErrorTitle": "Error loading chat history",
+    "chatHistoryLoadingErrorDescription": "Please try reloading the page or check your internet connection."
 }

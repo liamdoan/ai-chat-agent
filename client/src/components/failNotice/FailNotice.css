@@ -1,0 +1,16 @@
+.error-wrapper {
+    text-align: center;
+    padding: 2rem;
+    color: #e4022b;
+  }
+  
+.error-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.error-description {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #b5b5b5;
+}
