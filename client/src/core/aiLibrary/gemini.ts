@@ -1,4 +1,5 @@
 import { createPartFromUri, createUserContent, GoogleGenAI, HarmBlockThreshold, HarmCategory } from "@google/genai";
+import { ErrorLike } from "../types/type";
 
 const geminiPublicKey = import.meta.env.VITE_GEMINI_PUBLIC_KEY;
 
@@ -32,14 +33,18 @@ const RETRY_DELAY = 2000; // 2s
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const isRetryableError = (error: any) => {
+const isRetryableError = (error: unknown): boolean => {
+    if (typeof error !== "object" || error === null) return false;
+  
+    const err = error as ErrorLike;
+  
     return (
-        error?.status === 503 ||
-        error?.status === 500 ||
-        error?.message?.includes("overloaded") ||
-        error?.message?.includes("Internal error")
-    );
-};
+        err.status === 503 ||
+        err.status === 500 ||
+        (typeof err.message === "string" &&
+            (err.message.includes("overloaded") || err.message.includes("Internal error")))
+        );
+  };
 
 export const generateContent = async (
     prompts: string | [string, string],

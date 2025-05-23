@@ -7,7 +7,7 @@ import LoadingText from "../../components/loading/LoadingText";
 import FailNotice from "../../components/failNotice/failNotice";
 import uiMessages from "../../core/messages/uiMessages_en.json";
 
-const chatPage = () => {
+const ChatPage = () => {
     const {id} = useParams();
     const bottomChatPageRef = useRef<HTMLDivElement>(null);
     const chatPageComponentRef = useRef<HTMLDivElement | null>(null);
@@ -80,4 +80,4 @@ const chatPage = () => {
     )
 }
 
-export default chatPage
+export default ChatPage

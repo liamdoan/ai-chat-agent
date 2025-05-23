@@ -1,6 +1,7 @@
 import { IKContext, IKUpload } from 'imagekitio-react';
-import { useRef } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import "./Upload.css"
+import { ImgUploadStateType } from '../../core/types/type';
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 const publicKey = import.meta.env.VITE_IMAGE_KIT_PUBLIC_KEY;
@@ -18,34 +19,42 @@ const authenticator =  async () => {
         const data = await response.json();
         const { signature, expire, token } = data;
         return { signature, expire, token };
-    } catch (error: any) {
-        throw new Error(`Authentication request failed: ${error.message}`);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Authentication request failed: ${error.message}`);
+        } else {
+             throw new Error(`Authentication request failed: Unknown error`);
+        }
     }
 };
 
-const Upload = ({setImg}: { setImg: any }) => {
-    const ikUploadRef = useRef<any>(null)
+const Upload = ({setImg}: { setImg: React.Dispatch<React.SetStateAction<ImgUploadStateType>> }) => {
+    const ikUploadRef = useRef<HTMLInputElement | null>(null)
 
-    const onError = (err: any) => {
-        console.log("Error", err);
+    const onError = (err: unknown) => {
+        if (err instanceof Error) {
+            console.log("Error", err.message);
+        } else {
+            console.log("Error", err);
+        }
     };
     
-    const onSuccess = (res: any) => {
+    const onSuccess = (res: unknown) => {
         console.log("Success", res);
-        setImg((prev: any) => ({
+        setImg((prev: ImgUploadStateType) => ({
             ...prev,
             isLoading: false,
-            dbData: res
+            dbData: res as Record<string, undefined>
         }))
     };
     
-    const onUploadProgress = (progress: any) => {
+    const onUploadProgress = (progress: ProgressEvent) => {
         console.log("Progress", progress);
     };
     
-    const onUploadStart = (evt: any) => {
+    const onUploadStart = (evt: ChangeEvent<HTMLInputElement>) => {
         console.log("Start", evt);
-        setImg((prev: any) => ({
+        setImg((prev: ImgUploadStateType) => ({
             ...prev,
             isLoading: true
         }))

@@ -6,14 +6,9 @@ import { useCreateNewChatThread } from "../../core/hooks/useCreateNewChatThread"
 import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 import { handleExpandTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
 import Spinner from "../../components/loading/Spinner";
+import { ImgUploadStateType } from "../../core/types/type";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
-
-interface ImgUploadStateType {
-    isLoading: boolean,
-    error: string;
-    dbData: any
-}
 
 const DashboardPage = () => {
     // add userId later when integrating AUTH model into this project

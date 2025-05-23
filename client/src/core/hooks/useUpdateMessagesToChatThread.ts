@@ -1,7 +1,7 @@
 import { useFetchChatListContext } from "../context/fetchChatListContext";
 
 interface UseUpdateMessagesToChatThreadProps {
-    chatId: string;
+    chatId?: string;
     setAllChat: React.Dispatch<React.SetStateAction<any>>;
 }
 

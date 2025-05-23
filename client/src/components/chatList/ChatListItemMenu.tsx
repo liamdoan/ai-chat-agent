@@ -54,6 +54,7 @@ const ChatListItemMenu: React.FC<ChatListItemMenuProps> = ({ chatThreadId, chatT
                 menuContainer.style.overflow = "auto";
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isItemMenuVisible]);
 
     const handleClickRenameButtonFromMenu = () => {

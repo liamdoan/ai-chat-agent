@@ -10,19 +10,13 @@ import { useUpdateMessagesToChatThread } from "../../core/hooks/useUpdateMessage
 import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
 import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 import Spinner from "../loading/Spinner";
-
-const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
-
-interface ImgUploadStateType {
-    isLoading: boolean,
-    error: string;
-    dbData: any
-}
+import { Chat, ChatHistory, ImgUploadStateType } from "../../core/types/type";
+const urlEndpoint = import.meta.env.VITE_IMAG_KIT_ENDPOINT;
 
 interface NewPromptProps {
-    allChat: any,
-    chatId: any,
-    setAllChat: any,
+    allChat: Chat,
+    chatId?: string,
+    setAllChat: React.Dispatch<React.SetStateAction<Chat>>,
     formWrapperRef: React.RefObject<HTMLDivElement>
 }
 
@@ -102,13 +96,14 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             generateAiAnswerForFirstMessage();
             hasGenerateAnswerForFirstMsgRef.current = true;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allChat?.history, hasGenerateAnswerForFirstMsgRef]);
 
     useEffect(() => {
         endChatSeperatorRef.current?.scrollIntoView({behavior: "smooth"});
     }, [submittedPrompts, generatedAnswers])
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!prompts) return;
@@ -157,14 +152,14 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         handleKeyDownSubmit(e, {
-            onEnter: () => handleSubmit(e),
+            onEnter: () => handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>),
             onShiftEnter: () => setPrompts(prev => prev + '\n')
         })
     }
 
     return (
         <>
-            {allChat?.history?.map((item: any, index: number) => (
+            {allChat?.history?.map((item: ChatHistory, index: number) => (
                 <div key={index} className={`message ${item.role === "user" ? "user" : ""}`}>
                     {item.img && <img src={item.img} alt="Uploaded" width={200} />}
                     {item.role === "user" ? (
@@ -181,7 +176,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                 </div>
             }
             {/* make sure new prompt doesnt replace the previous one whose AI answer is not generated */}
-            {generatedAnswers && !allChat?.history?.some((msg: any) => msg.parts[0].text === generatedAnswers) && 
+            {generatedAnswers && !allChat?.history?.some((msg: ChatHistory) => msg.parts[0].text === generatedAnswers) && 
                 <div className="message">
                     <ReactMarkdown>{generatedAnswers}</ReactMarkdown>
                 </div>
