@@ -46,17 +46,22 @@ export const generateContent = async (
     handleStreamingUpdate: (newChunk: string) => void
 ) => {
     let retries = 0;
+    const MIN_RESPONSE_LENGTH = 10; //at least 10 characters
     
     while (retries < MAX_RETRIES) {
         try {
             //from docs, prompt contents (if including both text and img) is an array
+            console.log(`Attempt ${retries + 1} of ${MAX_RETRIES}`);
             let contents = [];
             let fullResponse = "";
 
             if (Array.isArray(prompts)) {
                 const [textPrompts, imageUrl] = prompts;
 
+                console.log("fetching image blob...");
                 const imageBlob = await fetchImageAsBlob(imageUrl);
+                
+                console.log("uploading image to Gemini...");
                 const uploadedImage = await ai.files.upload({
                     file: imageBlob
                 });
@@ -75,6 +80,7 @@ export const generateContent = async (
                 contents = [createUserContent([prompts])]
             }
 
+            console.log("generating content stream...");
             const response = await ai.models.generateContentStream({
                 model: "gemini-2.0-flash",
                 contents: contents,
@@ -92,16 +98,26 @@ export const generateContent = async (
                 }
             }
 
+            if (!fullResponse || fullResponse.length < MIN_RESPONSE_LENGTH) {
+                throw new Error(`Response too short or empty: "${fullResponse}"`);
+            }
+
+            console.log("Successfully generated content");
             return fullResponse;
         } catch (error: any) {
-            retries++;
+            console.error("Error details:", {
+                message: error.message,
+                status: error.status,
+                retryCount: retries + 1,
+                maxRetries: MAX_RETRIES
+            });
             
-            if (isRetryableError(error)) {
-                if (retries < MAX_RETRIES) {
-                    console.log(`Retry attempt ${retries} failed, retrying in ${RETRY_DELAY/1000} seconds...`);
-                    await sleep(RETRY_DELAY);
-                    continue;
-                }
+            retries++; // Move retries increment here, before checking if we should retry
+            
+            if (isRetryableError(error) && retries < MAX_RETRIES) {
+                console.log(`Retry attempt ${retries} of ${MAX_RETRIES}, waiting ${RETRY_DELAY/1000} seconds...`);
+                await sleep(RETRY_DELAY);
+                continue;
             }
             
             // if retry time exceeds MAX_RETRY or it's a different error, throw it
