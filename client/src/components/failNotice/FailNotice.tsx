@@ -1,5 +1,5 @@
 import React from 'react'
-import "./failNotice.css"
+import "./FailNotice.css"
 
 interface FailNoticeProps {
     title: string,
