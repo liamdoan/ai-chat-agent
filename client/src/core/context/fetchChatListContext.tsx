@@ -6,8 +6,13 @@ const apiEndpointBasedUrl = import.meta.env.VITE_SERVER_URL;
 
 export const FetchChatListProvider = ({children} : {children: React.ReactNode}) => {
     const [chatList, setChatlist] = useState<any>(null);
+    const [isFetchingChatList, setIsFetchingChatList] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
     const fetchChatList = async () => {
+        setIsFetchingChatList(true);
+        setError(null);
+        
         try {
             const response = await fetch(`${apiEndpointBasedUrl}/api/chats`, {
                 credentials: "include"
@@ -20,7 +25,10 @@ export const FetchChatListProvider = ({children} : {children: React.ReactNode}) 
             const data = await response.json();
             setChatlist(data);
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            setError(error as Error);
+        } finally {
+            setIsFetchingChatList(false);
         }
     };
     
@@ -29,7 +37,13 @@ export const FetchChatListProvider = ({children} : {children: React.ReactNode}) 
     }, []);
 
     return (
-        <FetchChatListContext.Provider value={{chatList, setChatlist, fetchChatList}}>
+        <FetchChatListContext.Provider value={{
+            chatList, 
+            setChatlist, 
+            fetchChatList,
+            isFetchingChatList,
+            error
+        }}>
             {children}
         </FetchChatListContext.Provider>
     )

@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { useFetchChatListContext } from "../../core/context/fetchChatListContext"
 import ChatListItem from "./ChatListItem";
 import { ChatThreadType } from "../../core/types/type";
+import Spinner from "../loading/Spinner";
 
 const ChatList = () => {
-    const { chatList } = useFetchChatListContext();
+    const { chatList, isFetchingChatList } = useFetchChatListContext();
 
     return (
         <div className='chatList'>
@@ -27,12 +28,16 @@ const ChatList = () => {
             <hr />
             <p className="section-title">Recent Chats</p>
             <div className="list">
-                {chatList && [...chatList].reverse().map((chatThread: ChatThreadType) => (
-                    <ChatListItem 
-                        key={chatThread._id}
-                        chatThread={chatThread}
-                    />
-                ))}
+                {isFetchingChatList ?
+                    <div className="loading-spinner"><Spinner /></div>
+                : (
+                    chatList && [...chatList].reverse().map((chatThread: ChatThreadType) => (
+                        <ChatListItem 
+                            key={chatThread._id}
+                            chatThread={chatThread}
+                        />
+                    ))
+                )}
             </div>
             <Link className="mainLink upgrade" to="/upgrade">
                 <img src="/upgrade-icon.svg" alt="" />
