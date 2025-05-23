@@ -1,4 +1,3 @@
-import React from 'react'
 import './ExplorePage.css'
 
 const ExplorePage = () => {

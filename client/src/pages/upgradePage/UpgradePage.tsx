@@ -1,4 +1,3 @@
-import React from 'react'
 import './UpgradePage.css'
 
 const UpgradePage = () => {

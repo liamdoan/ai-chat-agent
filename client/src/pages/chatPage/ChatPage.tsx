@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetchChatInThread } from "../../core/hooks/useFetchChatInThread";
 import LoadingText from "../../components/loading/LoadingText";
-import FailNotice from "../../components/failNotice/failNotice";
+import FailNotice from "../../components/failNotice/FailNotice";
 import uiMessages from "../../core/messages/uiMessages_en.json";
 
 const ChatPage = () => {
