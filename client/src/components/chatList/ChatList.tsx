@@ -4,9 +4,10 @@ import { useFetchChatListContext } from "../../core/context/fetchChatListContext
 import ChatListItem from "./ChatListItem";
 import { ChatThreadType } from "../../core/types/type";
 import Spinner from "../loading/Spinner";
-
+import uiMessages from "../../core/messages/uiMessages_en.json";
+import FailNotice from "../failNotice/FailNotice";
 const ChatList = () => {
-    const { chatList, isFetchingChatList } = useFetchChatListContext();
+    const { chatList, isFetchingChatList, error } = useFetchChatListContext();
 
     return (
         <div className='chatList'>
@@ -30,6 +31,13 @@ const ChatList = () => {
             <div className="list">
                 {isFetchingChatList ?
                     <div className="loading-spinner"><Spinner /></div>
+                : error ?
+                    <div className="error-message">
+                        <FailNotice
+                            title={uiMessages.chatListLoadingErrorTitle}
+                            description={uiMessages.chatHistoryLoadingErrorDescription}
+                        />
+                    </div>
                 : (
                     chatList && [...chatList].reverse().map((chatThread: ChatThreadType) => (
                         <ChatListItem 
