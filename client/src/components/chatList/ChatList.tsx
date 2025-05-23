@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom'
 import { useFetchChatListContext } from "../../core/context/fetchChatListContext"
 import ChatListItem from "./ChatListItem";
 import { ChatThreadType } from "../../core/types/type";
-import Spinner from "../loading/Spinner";
 import uiMessages from "../../core/messages/uiMessages_en.json";
 import FailNotice from "../failNotice/FailNotice";
 const ChatList = () => {
-    const { chatList, isFetchingChatList, error } = useFetchChatListContext();
+    const { chatList, error } = useFetchChatListContext();
 
     return (
         <div className='chatList'>
@@ -29,9 +28,7 @@ const ChatList = () => {
             <hr />
             <p className="section-title">Recent Chats</p>
             <div className="list">
-                {isFetchingChatList ?
-                    <div className="loading-spinner"><Spinner /></div>
-                : error ?
+                {error ?
                     <div className="error-message">
                         <FailNotice
                             title={uiMessages.chatListLoadingErrorTitle}
