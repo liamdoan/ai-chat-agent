@@ -12,14 +12,17 @@ module.exports.getChatList = async (req, res) => {
 
         // avoid return error
         if (!userChats || !userChats.length) {
-            return res.status(200).send([])
+            return res.status(200).json([]);
         };
 
-        res.status(200).send(userChats[0].chats)
-     } catch (error) {
-        console.error(error);
-        res.status(500).send("Can't fetch all chats.")
-     }
+        res.status(200).json(userChats[0].chats);
+    } catch (error) {
+        console.error("Error in getChatList:", error);
+        res.status(500).json({
+            error: "Failed to fetch chats",
+            message: error.message
+        });
+    }
 };
 
 // delete a chat thread in ChatList
