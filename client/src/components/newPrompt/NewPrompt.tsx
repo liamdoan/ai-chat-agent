@@ -9,6 +9,7 @@ import { useGenerateAiAnswer } from "../../core/hooks/useGenerateAiAnswer";
 import { useUpdateMessagesToChatThread } from "../../core/hooks/useUpdateMessagesToChatThread";
 import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
 import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
+import Spinner from "../loading/Spinner";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -189,7 +190,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             <div className="formWrapper" ref={formWrapperRef}>
                 <form className="newForm" onSubmit={handleSubmit}>
                     {img.isLoading &&
-                        <div>Loading ...</div>
+                        <div className="loading-spinner"><Spinner /></div>
                     }
                     {img.dbData?.filePath && (
                         <IKImage

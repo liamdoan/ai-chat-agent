@@ -5,6 +5,7 @@ import Upload from "../../components/upload/Upload";
 import { useCreateNewChatThread } from "../../core/hooks/useCreateNewChatThread";
 import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 import { handleExpandTextareaHeight } from "../../core/helpers/textAreaHeightMeasure";
+import Spinner from "../../components/loading/Spinner";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -56,7 +57,7 @@ const DashboardPage = () => {
             <div className="formContainer">
                 <form className="newForm" onSubmit={handleSubmit}>
                     {img.isLoading &&
-                        <div>Loading ...</div>
+                        <div className="loading-spinner"><Spinner /></div>
                     }
                     {img.dbData?.filePath && (
                         <IKImage
