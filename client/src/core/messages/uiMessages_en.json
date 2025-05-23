@@ -2,5 +2,8 @@
     "chatHistoryLoading": "Loading chat history, please wait ...",
     "chatHistoryLoadingErrorTitle": "Error loading chat history",
     "chatHistoryLoadingErrorDescription": "Please try reloading the page or check your internet connection.",
-    "chatListLoadingErrorTitle": "Error loading chat list"
+    "chatListLoadingErrorTitle": "Error loading chat list",
+    "aiResponseLoading": "Generating response, please wait ...",
+    "aiResponseLoadingErrorTitle": "Error generating response",
+    "aiResponseLoadingErrorDescription": "Please try reloading the page or check your internet connection."
 }

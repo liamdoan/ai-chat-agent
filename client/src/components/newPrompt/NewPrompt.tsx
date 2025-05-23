@@ -11,7 +11,10 @@ import { handleExpandTextareaHeight, handleResetTextareaHeight } from "../../cor
 import { handleKeyDownSubmit } from "../../core/helpers/handleKeydownSubmit";
 import Spinner from "../loading/Spinner";
 import { Chat, ChatHistory, ImgUploadStateType } from "../../core/types/type";
-const urlEndpoint = import.meta.env.VITE_IMAG_KIT_ENDPOINT;
+import LoadingText from "../loading/LoadingText";
+import uiMessages from "../../core/messages/uiMessages_en.json";
+
+const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
 interface NewPromptProps {
     allChat: Chat,
@@ -25,6 +28,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     const [submittedPrompts, setSubmittedPrompts] = useState<string | undefined> ("");
     const [generatedAnswers, setGeneratedAnswers] = useState<string | undefined> ("");
     const [submittedImage, setSubmittedImage] = useState<string | undefined>(undefined);
+    const [isWaitingForResponseOnImg, setIsWaitingForResponseOnImg] = useState<boolean>(false);
     const [img, setImg] = useState<ImgUploadStateType>({
         isLoading: false,
         error: "",
@@ -36,6 +40,9 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     const hasGenerateAnswerForFirstMsgRef = useRef(false);
 
     const handleStreamingUpdate = (newChunk: string) => {
+        if (isWaitingForResponseOnImg) {
+            setIsWaitingForResponseOnImg(false);
+        }
         setGeneratedAnswers(prevText => prevText + newChunk);
     };
 
@@ -66,6 +73,10 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     throw new Error("Invalid message format");
                 }
 
+                if (firstMessage.img) {
+                    setIsWaitingForResponseOnImg(true);
+                }
+
                 const aiResponse = await generateAiAnswer({
                     prompt: firstMessage.parts[0].text,
                     imageUrl: firstMessage.img
@@ -89,6 +100,8 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
 
             } catch (error) {
                 console.error("Error generating answers:", error);
+            } finally {
+                setIsWaitingForResponseOnImg(false);
             }
         }
 
@@ -124,6 +137,10 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
 
         try {
             setGeneratedAnswers("");
+            // Only set waiting state if there's an image
+            if (currentImage) {
+                setIsWaitingForResponseOnImg(true);
+            }
             
             const aiResponse = await generateAiAnswer({
                 prompt: currentPrompt,
@@ -147,6 +164,8 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             console.error("Error generating answers:", error);
             // Don't clear submittedPrompts on error
             setGeneratedAnswers("");
+        } finally {
+            setIsWaitingForResponseOnImg(false);
         }
     };
 
@@ -175,7 +194,9 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     {formatText(submittedPrompts)}
                 </div>
             }
-            {/* make sure new prompt doesnt replace the previous one whose AI answer is not generated */}
+            {isWaitingForResponseOnImg &&(
+                <LoadingText loadingText={uiMessages.aiResponseLoading} />
+            )}
             {generatedAnswers && !allChat?.history?.some((msg: ChatHistory) => msg.parts[0].text === generatedAnswers) && 
                 <div className="message">
                     <ReactMarkdown>{generatedAnswers}</ReactMarkdown>
@@ -208,7 +229,10 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
                     ></textarea>
                     <div className="buttons">
                         <Upload setImg={setImg}/>
-                        <button className="submit-button" disabled={!prompts}>
+                        <button
+                            className="submit-button"
+                            disabled={!prompts || isWaitingForResponseOnImg}
+                        >
                             <img src="/up-arrow-icon.svg" alt="" />
                         </button>
                     </div>
