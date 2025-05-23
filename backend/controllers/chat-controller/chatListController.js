@@ -1,14 +1,18 @@
 const userChatsModel = require("../../database/models/userChatsModel");
 const chatModel = require("../../database/models/chatModel");
+const connectMongo = require("../../database/connectMongo");
 
 // get all chats in ChatList
 module.exports.getChatList = async (req, res) => {
     const userId = "12345";
 
-     try {
+    try {
+        // Ensure MongoDB is connected
+        await connectMongo();
+        
         const userChats = await userChatsModel.find({
             userId: userId
-        })
+        }).maxTimeMS(30000); // Add timeout of 30 seconds for the query
 
         // avoid return error
         if (!userChats || !userChats.length) {
