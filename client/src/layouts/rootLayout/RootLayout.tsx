@@ -10,7 +10,7 @@ const RootLayout = () => {
         <div className='rootLayout'>
             <header className='header'>
                 {isDashboardPath ? (
-                    <div>MODEL_OPTIONS</div>
+                    <div ><em>MODEL_OPTIONS</em></div>
                 ) : (
                     <Link className='logo-link' to="/explore">
                         <img className='logo' src="/ai-chat-icon.png" alt="logo" />
@@ -18,7 +18,7 @@ const RootLayout = () => {
                     </Link>
                 )}
                 <div className="user">
-                    USER_PROFILE
+                    <em>USER_PROFILE</em>
                 </div>
             </header>
             <main>
