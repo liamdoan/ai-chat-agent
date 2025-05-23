@@ -3,6 +3,8 @@ import NewPrompt from "../../components/newPrompt/NewPrompt";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetchChatInThread } from "../../core/hooks/useFetchChatInThread";
+import LoadingText from "../../components/loading/LoadingText";
+import uiMessages from "../../core/messages/uiMessages_en.json";
 
 const chatPage = () => {
     const {id} = useParams();
@@ -53,6 +55,9 @@ const chatPage = () => {
 
     return (
         <div className="chatPage" ref={chatPageComponentRef}>
+            {loading ??
+                <LoadingText loadingText={uiMessages.chatHistoryLoading} />
+            }
             <div className="wrapper">
                 <div className="chat">
                     <NewPrompt

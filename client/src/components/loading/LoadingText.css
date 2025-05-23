@@ -1,0 +1,26 @@
+.loading-text {
+    position: relative;
+    padding: 2rem 1rem;
+    font-size: 1rem;
+    color: whitered;
+    overflow: hidden;
+    background: linear-gradient(
+      90deg,
+      rgba(136, 136, 136, 0.2) 0%,
+      rgba(255, 255, 255, 1) 50%,
+      rgba(136, 136, 136, 0.2) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmerOpacity 2s infinite;
+}
+
+@keyframes shimmerOpacity {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
