@@ -5,5 +5,5 @@
     "chatListLoadingErrorTitle": "Error loading chat list",
     "aiResponseLoading": "Generating response, please wait ...",
     "aiResponseLoadingErrorTitle": "Error generating response",
-    "aiResponseLoadingErrorDescription": "Please try reloading the page or check your internet connection."
+    "aiResponseLoadingErrorDescription": "Please try again or check your internet connection."
 }

@@ -13,6 +13,7 @@ import Spinner from "../loading/Spinner";
 import { Chat, ChatHistory, ImgUploadStateType } from "../../core/types/type";
 import LoadingText from "../loading/LoadingText";
 import uiMessages from "../../core/messages/uiMessages_en.json";
+import FailNotice from "../failNotice/FailNotice";
 
 const urlEndpoint = import.meta.env.VITE_IMAGE_KIT_ENDPOINT;
 
@@ -29,6 +30,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
     const [generatedAnswers, setGeneratedAnswers] = useState<string | undefined> ("");
     const [submittedImage, setSubmittedImage] = useState<string | undefined>(undefined);
     const [isWaitingForResponseOnImg, setIsWaitingForResponseOnImg] = useState<boolean>(false);
+    const [modelError, setModelError] = useState<boolean>(false);
     const [img, setImg] = useState<ImgUploadStateType>({
         isLoading: false,
         error: "",
@@ -125,6 +127,7 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
         const currentImage = img.dbData.url; // store current image url
         setSubmittedPrompts(currentPrompt);
         setSubmittedImage(currentImage);
+        setModelError(false);
         
         setPrompts("");
         handleResetTextareaHeight(textareaRef);
@@ -162,6 +165,12 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             setGeneratedAnswers("");
         } catch (error) {
             console.error("Error generating answers:", error);
+            if (error instanceof Error && 
+                (error.message.includes("Max retries exceeded") || 
+                 error.message.includes("Failed to generate content after"))) {
+                setModelError(true);
+            }
+
             // Don't clear submittedPrompts on error
             setGeneratedAnswers("");
         } finally {
@@ -196,6 +205,12 @@ const NewPrompt: React.FC<NewPromptProps> = ({allChat, chatId, setAllChat, formW
             }
             {isWaitingForResponseOnImg &&(
                 <LoadingText loadingText={uiMessages.aiResponseLoading} />
+            )}
+            {modelError && (
+                <FailNotice
+                    title={uiMessages.aiResponseLoadingErrorTitle}
+                    description={uiMessages.aiResponseLoadingErrorDescription}
+                />
             )}
             {generatedAnswers && !allChat?.history?.some((msg: ChatHistory) => msg.parts[0].text === generatedAnswers) && 
                 <div className="message">
