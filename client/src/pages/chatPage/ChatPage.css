@@ -17,6 +17,7 @@
     .chat {
         width: 60%;
         min-width: 500px;
+        max-width: 60vw;
         display: flex;
         flex-direction: column;
     }

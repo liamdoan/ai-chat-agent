@@ -46,19 +46,30 @@
         margin: 0.5rem 0;
     }
 
+    /* inline code style */
     code {
+        font-family: monospace;
         background-color: rgba(255, 255, 255, 0.1);
         padding: 0.2em 0.4em;
         border-radius: 3px;
-        font-family: monospace;
     }
 
+    /* code block style */
     pre {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 1rem;
+        background-color: #242424;
         border-radius: 5px;
-        overflow-x: auto;
+        border: 1px solid rgba(118, 118, 118, 0.5);
         margin: 1rem 0;
+        padding: 1rem;
+        overflow-x: auto;
+    }
+
+    pre code {
+        background: none;
+        padding: 0;
+        white-space: pre;
+        display: inline-block;
+        min-width: 100%;
     }
 
     blockquote {
